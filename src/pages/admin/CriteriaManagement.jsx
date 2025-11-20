@@ -11,6 +11,14 @@ import {
 } from "lucide-react";
 import DashboardPageShell from "./DashboardPageShell.jsx";
 
+const API_BASE = (() => {
+  const backendURL = import.meta.env.VITE_BACKEND_URL
+    ? import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "")
+    : "http://localhost:3000";
+  return `${backendURL}/api/kriteria`;
+})();
+
+
 const newCriterionTemplate = {
   nama: "",
   weight: 0,
@@ -40,7 +48,7 @@ export default function CriteriaManagement() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/kriteria", { headers });
+      const response = await fetch(API_BASE, { headers });
       if (!response.ok) {
         throw new Error("Gagal mengambil data kriteria");
       }
@@ -70,7 +78,7 @@ export default function CriteriaManagement() {
     setSuccess("");
 
     try {
-      const endpoint = editingId ? `/api/kriteria/${editingId}` : "/api/kriteria";
+      const endpoint = editingId ? `${API_BASE}/${editingId}` : API_BASE;
       const method = editingId ? "PUT" : "POST";
       const response = await fetch(endpoint, {
         method,

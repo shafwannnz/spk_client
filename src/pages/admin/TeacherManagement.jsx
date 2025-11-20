@@ -11,6 +11,14 @@ import {
 } from "lucide-react";
 import DashboardPageShell from "./DashboardPageShell.jsx";
 
+const API_BASE = (() => {
+  const backendURL = import.meta.env.VITE_BACKEND_URL
+    ? import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "")
+    : "http://localhost:3000";
+  return `${backendURL}/api/guru`;
+})();
+
+
 const newTeacherTemplate = {
   nama: "",
   nip: "",
@@ -87,7 +95,7 @@ export default function TeacherManagement() {
     setSuccessMessage("");
 
     try {
-      const endpoint = editingId ? `/api/guru/${editingId}` : "/api/guru";
+      const endpoint = editingId ? `${API_BASE}/${editingId}` : API_BASE;
       const method = editingId ? "PUT" : "POST";
       const response = await fetch(endpoint, {
         method,

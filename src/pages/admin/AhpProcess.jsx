@@ -76,8 +76,8 @@ export default function AhpProcess() {
 
   return (
     <DashboardPageShell
-      title="Proses Perhitungan AHP & APK"
-      description="Lakukan perhitungan Analytic Hierarchy Process dan perbarui nilai APK berdasarkan bobot terbaru."
+      title="Proses Perhitungan AHP"
+      description="Lakukan perhitungan Analytic Hierarchy Process dan perbarui nilai berdasarkan bobot terbaru."
       actionSlot={
         <button
           type="button"
@@ -162,7 +162,7 @@ export default function AhpProcess() {
             <div>
               <h2 className="text-lg font-semibold text-slate-700">Status & Riwayat Proses</h2>
               <p className="text-sm text-slate-500">
-                Catatan eksekusi perhitungan AHP & APK yang dikirim ke API backend.
+                Catatan eksekusi perhitungan AHP yang dikirim ke API backend.
               </p>
             </div>
           </div>

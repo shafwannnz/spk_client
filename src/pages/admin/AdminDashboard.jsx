@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -77,7 +77,6 @@ const featureActions = [
     ],
     primaryLabel: "Kelola Kriteria",
     primaryRoute: "/dashboard/kriteria",
-    secondaryLabel: "Pantau Konsistensi",
     secondaryRoute: "/dashboard/ahp",
   },
   {
@@ -109,54 +108,6 @@ const featureActions = [
     ],
     primaryLabel: "Cetak / Unduh",
     primaryRoute: "/dashboard/laporan",
-  },
-];
-
-const integrationLogs = [
-  {
-    id: 1,
-    time: "17:40",
-    status: "Berhasil",
-    variant: "success",
-    method: "POST /api/siswa/import",
-    description: "Sinkronisasi 32 siswa baru dari Postman koleksi 'PPDB 2025'.",
-  },
-  {
-    id: 2,
-    time: "16:05",
-    status: "Perlu Cek",
-    variant: "warning",
-    method: "PUT /api/guru/54",
-    description: "Perubahan status guru belum tervalidasi oleh tim HR.",
-  },
-  {
-    id: 3,
-    time: "14:22",
-    status: "Berhasil",
-    variant: "success",
-    method: "GET /api/kriteria/matriks",
-    description: "Matriks AHP diekspor untuk evaluasi komite akademik.",
-  },
-];
-
-const agendaItems = [
-  {
-    id: 1,
-    title: "Validasi data siswa semester ganjil",
-    schedule: "2 Nov 2025 · 09.00 WIB",
-    owner: "Tim Kesiswaan",
-  },
-  {
-    id: 2,
-    title: "Review bobot kriteria AHP",
-    schedule: "3 Nov 2025 · 13.30 WIB",
-    owner: "Komite Akademik",
-  },
-  {
-    id: 3,
-    title: "Generate laporan APK untuk Kepala Sekolah",
-    schedule: "4 Nov 2025 · 08.00 WIB",
-    owner: "Operator SPK",
   },
 ];
 
@@ -201,26 +152,6 @@ const reportSummaries = [
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const monitoringAlerts = useMemo(
-    () => [
-      {
-        id: 1,
-        label: "Sinkronisasi Postman terakhir 2 menit lalu",
-        tone: "positive",
-      },
-      {
-        id: 2,
-        label: "1 endpoint AHP menunggu verifikasi konsistensi",
-        tone: "warning",
-      },
-      {
-        id: 3,
-        label: "Target APK semester ini sudah terpenuhi",
-        tone: "positive",
-      },
-    ],
-    []
-  );
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -257,41 +188,23 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="relative hidden md:block">
-              <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <input
-                type="search"
-                placeholder="Cari siswa, guru, atau laporan..."
-                className="w-72 rounded-full border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm text-slate-600 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100"
-              />
-            </div>
+          <div className="flex items-center gap-3">
+            {/* Logout button di header */}
             <button
-              type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-600"
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+              aria-label="Keluar dari Dashboard"
+              title="Keluar"
             >
-              <Bell className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-600"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              className="hidden h-10 items-center gap-2 rounded-full bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 md:flex"
-            >
-              <TrendingUp className="h-4 w-4" />
-              Ringkasan APK
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Keluar</span>
             </button>
           </div>
         </div>
       </header>
-
       <main className="mx-auto max-w-6xl px-6 py-8">
           <section className="mb-8 grid gap-6 lg:grid-cols-[2fr,1fr]">
-            <div className="flex h-full flex-col gap-6 rounded-3xl bg-gradient-to-br from-sky-500 to-indigo-600 p-6 text-white shadow-lg">
+            <div className="col-span-full flex h-full flex-col gap-6 rounded-3xl bg-gradient-to-br from-sky-500 to-indigo-600 p-6 text-white shadow-lg">
               <p className="text-sm font-medium text-white/80">Selamat datang, Admin</p>
               <h1 className="text-2xl font-bold">
                 Sistem Pendukung Keputusan Sekolah Insantama Leuwiliang
@@ -306,86 +219,43 @@ export default function AdminDashboard() {
                   onClick={() => goTo("/dashboard/ahp")}
                   className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white"
                 >
-                  Mulai Perhitungan APK
+                  Mulai Perhitungan AHP (Analytic Hierarchy Process)
               </button>
             </div>
           </div>
-
-          <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-slate-600">
-                Status Integrasi & Monitoring
-              </p>
-              <MoreHorizontal className="h-4 w-4 text-slate-400" />
-            </div>
-            <ul className="mt-4 space-y-3 text-sm text-slate-500">
-              {monitoringAlerts.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 px-3 py-2"
-                >
-                  <span
-                    className={`mt-1 h-2.5 w-2.5 rounded-full ${
-                      item.tone === "positive" ? "bg-emerald-400" : "bg-amber-400"
-                    }`}
-                  />
-                  <span>{item.label}</span>
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={() => goTo("/dashboard/ahp")}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Riwayat Sinkronisasi
-            </button>
-          </div>
         </section>
 
-        {/* <section className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-          {statsOverview.map(({ title, value, subtitle, change, icon, accent }) => {
-            const IconComponent = icon;
-            return (
-              <article
-                key={title}
-                className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:border-slate-200 hover:shadow-md"
-              >
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${accent}`}
-                >
-                  <IconComponent className="h-5 w-5 text-slate-600" />
-                </div>
-                <p className="mt-4 text-sm font-medium text-slate-500">{title}</p>
-                <p className="mt-1 text-2xl font-semibold text-slate-800">{value}</p>
-                <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
-                <p className="mt-2 text-xs font-medium text-emerald-500">{change}</p>
-              </article>
-            );
-          })}
-        </section> */}
-
-        <section className="mt-8 grid gap-6 xl:grid-cols-3">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
+        <section className="mt-8">
+        {/* Wrapper background mirip card biru hero */}
+        <div className="col-span-full rounded-3xl bg-gradient-to-br from-sky-500 to-indigo-600 p-6 text-white shadow-lg">
+          <div className="max-w-6xl mx-auto">
             <header className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-600">
-                  Fitur Utama Sistem Pendukung Keputusan
-                </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-sm font-semibold text-white">Fitur Utama Sistem Pendukung Keputusan</p>
+                <p className="text-xs text-white/90">
                   Kelola modul utama dan integrasikan dengan koleksi Postman sekolah
                 </p>
               </div>
+              {/* optional quick action button di kanan header */}
+              <div className="hidden sm:flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => goTo("/dashboard/ahp")}
+                  className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 hover:bg-white"
+                >
+                  <Calculator className="h-4 w-4" />
+                  Mulai Perhitungan
+                </button>
+              </div>
             </header>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {/* grid fitur — kartu putih kecil di atas latar biru */}
+            <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {featureActions.map(
                 ({
                   title,
                   description,
                   icon,
-                  apiRoutes,
                   primaryLabel,
                   primaryRoute,
                   secondaryLabel,
@@ -396,38 +266,16 @@ export default function AdminDashboard() {
                   return (
                     <article
                       key={title}
-                      className="flex flex-col rounded-2xl border border-slate-100 bg-slate-50/60 p-5 transition hover:border-slate-200 hover:bg-slate-50"
+                      className="flex flex-col rounded-2xl border border-slate-100 bg-white p-5 text-slate-700 shadow-sm transition hover:shadow-md"
                     >
                       <div className="flex items-start gap-3">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-600 shadow-sm">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 shadow-sm">
                           <IconComponent className="h-5 w-5" />
                         </span>
                         <div>
-                          <h3 className="text-base font-semibold text-slate-700">{title}</h3>
+                          <h3 className="text-base font-semibold text-slate-800">{title}</h3>
                           <p className="mt-1 text-sm text-slate-500">{description}</p>
                         </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-slate-500">
-                        {apiRoutes.map(({ method, path }) => (
-                          <span
-                            key={`${method}-${path}`}
-                            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 shadow-sm"
-                          >
-                            <span
-                              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                                method === "GET"
-                                  ? "bg-emerald-100 text-emerald-600"
-                                  : method === "POST"
-                                  ? "bg-sky-100 text-sky-600"
-                                  : "bg-amber-100 text-amber-600"
-                              }`}
-                            >
-                              {method}
-                            </span>
-                            {path}
-                          </span>
-                        ))}
                       </div>
 
                       <div className="mt-auto flex flex-wrap gap-3 pt-4">
@@ -442,11 +290,8 @@ export default function AdminDashboard() {
                           <button
                             type="button"
                             onClick={() => {
-                              if (secondaryRoute) {
-                                goTo(secondaryRoute);
-                              } else if (secondaryHref) {
-                                openExternal(secondaryHref);
-                              }
+                              if (secondaryRoute) goTo(secondaryRoute);
+                              else if (secondaryHref) openExternal(secondaryHref);
                             }}
                             className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
                           >
@@ -460,101 +305,26 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
+        </div>
 
-          <aside className="flex flex-col gap-6">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <header className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">
-                    Aktivitas Integrasi API
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Catatan sinkronisasi dari koleksi Postman
-                  </p>
-                </div>
-                <RefreshCw className="h-4 w-4 text-slate-400" />
-              </header>
-              <ul className="mt-4 space-y-4 text-sm text-slate-500">
-                {integrationLogs.map(({ id, time, status, variant, method, description }) => (
-                  <li
-                    key={id}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-slate-700">{status}</p>
-                        <p className="text-xs text-slate-400">
-                          {time} · {method}
-                        </p>
-                      </div>
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          variant === "success" ? "bg-emerald-400" : "bg-amber-400"
-                        }`}
-                      />
-                    </div>
-                    <p className="mt-3 text-sm text-slate-500">{description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <header className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">
-                    Agenda Operasional
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Prioritas harian tim operator SPK
-                  </p>
-                </div>
-                <Calendar className="h-4 w-4 text-slate-400" />
-              </header>
-              <ul className="mt-4 space-y-3 text-sm text-slate-500">
-                {agendaItems.map(({ id, title, schedule, owner }) => (
-                  <li
-                    key={id}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4"
-                  >
-                    <p className="text-slate-700">{title}</p>
-                    <p className="mt-2 text-xs uppercase tracking-wide text-slate-400">
-                      {schedule}
-                    </p>
-                    <p className="mt-1 text-xs font-semibold text-slate-500">
-                      Penanggung jawab: {owner}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={handleLogout}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-              >
-                <LogOut className="h-4 w-4" />
-                Keluar dari Dashboard
-              </button>
-            </div>
-          </aside>
-        </section>
-
-        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+        {/* Bagian kanan sebelumnya (Analisis AHP / APK) dibuat sebagai bar putih di bawah wrapper
+            supaya tetap terbaca di atas latar biru — jika ingin tetap berada di samping, ubah layout grid */}
+        <div className="mt-6 max-w-6xl mx-auto grid gap-6 lg:grid-cols-2">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <header className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-600">
-                  Analisis Hierarki Proses (AHP)
-                </p>
-                <p className="text-xs text-slate-400">
-                  Tinjau bobot prioritas dan konsistensi kriteria
-                </p>
+                <p className="text-sm font-semibold text-slate-600">Analisis Hierarki Proses (AHP)</p>
+                <p className="text-xs text-slate-400">Tinjau bobot prioritas dan konsistensi kriteria</p>
               </div>
               <ClipboardList className="h-4 w-4 text-slate-400" />
             </header>
+
             <p className="mt-4 text-sm text-slate-500">
               Pantau pembobotan kriteria agar proses perhitungan APK tetap akurat. Pastikan nilai
               Konsistensi Rasio (CR) di bawah 0.1 sebelum melanjutkan ke proses APK.
             </p>
+
+            {/* ... tetapkan table AHP seperti sebelumnya ... */}
             <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100">
               <table className="min-w-full divide-y divide-slate-100 text-sm">
                 <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -563,6 +333,105 @@ export default function AdminDashboard() {
                     <th className="px-4 py-3 text-right">Bobot</th>
                     <th className="px-4 py-3 text-right">Perubahan</th>
                     <th className="px-4 py-3 text-right">Update Terakhir</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white text-slate-600">
+                  {ahpCriteria.map(({ name, weight, trend, lastUpdated }) => (
+                    <tr key={name} className="transition hover:bg-slate-50/70">
+                      <td className="px-4 py-3 font-semibold text-slate-700">{name}</td>
+                      <td className="px-4 py-3 text-right text-sm font-semibold">{weight.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right text-xs font-semibold text-emerald-500">{trend}</td>
+                      <td className="px-4 py-3 text-right text-xs text-slate-400">{lastUpdated}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => goTo("/dashboard/kriteria")}
+              className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Cek Konsistensi Matriks
+            </button>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <header className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-slate-600">Perhitungan APK & Laporan</p>
+                <p className="text-xs text-slate-400">Hasil terbaru dan laporan siap cetak</p>
+              </div>
+              <Calculator className="h-4 w-4 text-slate-400" />
+            </header>
+
+            {/* ... isi APK seperti sebelumnya ... */}
+            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-5">
+              <div className="flex items-baseline justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Nilai APK Terbaru</p>
+                  <p className="mt-1 text-4xl font-bold text-slate-800">{apkSummary.score.toFixed(1)}%</p>
+                </div>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-600">
+                  {apkSummary.cycle}
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-slate-500">{apkSummary.note}</p>
+              <p className="mt-2 text-xs font-medium text-emerald-500">{apkSummary.change}</p>
+              <div className="mt-4 h-2 rounded-full bg-white">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-500"
+                  style={{ width: `${Math.min(100, apkSummary.score)}%` }}
+                />
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => goTo("/dashboard/ahp")}
+                  className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                  Jalankan APK Ulang
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo("/dashboard/laporan")}
+                  className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  Kirim ke Kepala Sekolah
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="col-span-full flex h-full flex-col gap-6 rounded-3xl bg-gradient-to-br from-sky-500 to-indigo-600 p-6 text-white shadow-lg">
+            <header className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  Analisis Hierarki Proses (AHP)
+                </p>
+                <p className="text-xs text-white">
+                  Tinjau bobot prioritas dan konsistensi kriteria
+                </p>
+              </div>
+              <ClipboardList className="h-4 w-4 text-white" />
+            </header>
+            <p className="mt-4 text-sm text-white">
+              Pantau pembobotan kriteria agar proses perhitungan APK tetap akurat. Pastikan nilai
+              Konsistensi Rasio (CR) di bawah 0.1 sebelum melanjutkan ke proses APK.
+            </p>
+            <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  <tr>
+                    <th className="px-4 py-3 text-black">Kriteria</th>
+                    <th className="px-4 py-3 text-right text-black">Bobot</th>
+                    <th className="px-4 py-3 text-right text-black">Perubahan</th>
+                    <th className="px-4 py-3 text-right text-black">Update Terakhir</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 bg-white text-slate-600">

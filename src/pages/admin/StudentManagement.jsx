@@ -176,15 +176,6 @@ export default function StudentManagement() {
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             Muat Ulang
           </button>
-          <a
-            href="https://www.postman.com/"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-          >
-            <Download className="h-4 w-4" />
-            Buka Koleksi Postman
-          </a>
         </>
       }
     >
@@ -265,14 +256,6 @@ export default function StudentManagement() {
               >
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 {editingId ? "Simpan Perubahan" : "Simpan Siswa"}
-              </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-              >
-                <Plus className="h-4 w-4" />
-                Entry Baru
               </button>
             </div>
           </form>
