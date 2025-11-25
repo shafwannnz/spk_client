@@ -9,6 +9,13 @@ import {
 } from "lucide-react";
 import DashboardPageShell from "./DashboardPageShell.jsx";
 
+const API_BASE = (() => {
+  const backendURL = import.meta.env.VITE_BACKEND_URL
+    ? import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "")
+    : "http://localhost:3000";
+  return `${backendURL}/api/perhitungan/apk`;
+})();
+
 export default function AhpProcess() {
   const [status, setStatus] = useState(null);
   const [history, setHistory] = useState([]);
@@ -30,7 +37,7 @@ export default function AhpProcess() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/perhitungan/apk/status", {
+      const response = await fetch(`${API_BASE}/status`, {
         headers,
       });
       if (!response.ok) {
@@ -56,7 +63,7 @@ export default function AhpProcess() {
     setSuccess("");
 
     try {
-      const response = await fetch("/api/perhitungan/apk", {
+      const response = await fetch(API_BASE, {
         method: "POST",
         headers,
       });
@@ -136,7 +143,7 @@ export default function AhpProcess() {
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
-            {running ? "Memproses..." : "Mulai Perhitungan AHP + APK"}
+            {running ? "Memproses..." : "Mulai Perhitungan AHP"}
           </button>
 
           {status?.running ? (

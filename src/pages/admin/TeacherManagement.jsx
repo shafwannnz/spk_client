@@ -50,7 +50,7 @@ export default function TeacherManagement() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/guru", { headers });
+      const response = await fetch(API_BASE, { headers });
       if (!response.ok) {
         throw new Error("Gagal memuat data guru");
       }
@@ -140,7 +140,7 @@ export default function TeacherManagement() {
     setSuccessMessage("");
 
     try {
-      const response = await fetch(`/api/guru/${teacherId}`, {
+      const response = await fetch(`${API_BASE}/${teacherId}`, {
         method: "DELETE",
         headers,
       });

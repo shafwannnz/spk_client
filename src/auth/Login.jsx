@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react"; // ikon modern
 
 export default function Login() {
+  const API_BASE = (() => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL
+      ? import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "")
+      : "http://localhost:3000";
+    return `${backendURL}/api`;
+  })();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -11,7 +17,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch(`${API_BASE}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

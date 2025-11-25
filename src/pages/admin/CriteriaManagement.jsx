@@ -53,8 +53,16 @@ export default function CriteriaManagement() {
         throw new Error("Gagal mengambil data kriteria");
       }
       const data = await response.json();
-      setCriteria(Array.isArray(data) ? data : data?.data ?? []);
-      setConsistencyRatio(data?.consistency ?? null);
+      // Map server shape to client shape. Server uses: nama_kriteria, bobot, deskripsi
+      const raw = Array.isArray(data) ? data : data?.data ?? [];
+      const mapped = raw.map((item) => ({
+        id: item.id ?? item._id,
+        nama: item.nama_kriteria ?? item.nama ?? "",
+        weight: Number(item.bobot ?? item.weight ?? 0),
+        description: item.deskripsi ?? item.description ?? "",
+      }));
+      setCriteria(mapped);
+      setConsistencyRatio(data?.consistency ?? data?.CR ?? null);
     } catch (err) {
       setError(err.message || "Terjadi kesalahan saat memuat kriteria");
     } finally {
@@ -80,10 +88,17 @@ export default function CriteriaManagement() {
     try {
       const endpoint = editingId ? `${API_BASE}/${editingId}` : API_BASE;
       const method = editingId ? "PUT" : "POST";
+      // Convert client form shape to server expected shape
+      const payload = {
+        nama_kriteria: formData.nama,
+        bobot: formData.weight,
+      };
+      if (formData.description != null) payload.deskripsi = formData.description;
+
       const response = await fetch(endpoint, {
         method,
         headers,
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -121,7 +136,7 @@ export default function CriteriaManagement() {
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/kriteria/${criterionId}`, {
+      const response = await fetch(`${API_BASE}/${criterionId}`, {
         method: "DELETE",
         headers,
       });
@@ -145,7 +160,7 @@ export default function CriteriaManagement() {
     setError("");
     setSuccess("");
     try {
-      const response = await fetch("/api/kriteria/bobot", {
+      const response = await fetch(`${API_BASE}/bobot`, {
         method: "POST",
         headers,
       });
